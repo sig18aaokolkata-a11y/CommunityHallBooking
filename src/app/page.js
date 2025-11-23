@@ -98,7 +98,6 @@ export default function Home() {
           <Calendar
             onChange={setDate}
             value={date}
-            minDate={new Date()}
             className="custom-calendar"
             onActiveStartDateChange={({ activeStartDate }) => setActiveStartDate(activeStartDate)}
             tileClassName={tileClassName}
@@ -150,22 +149,30 @@ export default function Home() {
             </div>
           ) : (
             <div className="booking-info">
-              <div style={{
-                padding: '0.5rem',
-                borderRadius: '4px',
-                backgroundColor: '#e2e8f0',
-                color: '#1e293b',
-                fontWeight: 'bold',
-                marginBottom: '1rem',
-                textAlign: 'center'
-              }}>
-                Available
-              </div>
-              <p style={{ marginBottom: '0.5rem' }}>This date is available for booking.</p>
-              <p style={{ marginBottom: '1rem', fontWeight: '500' }}>Booking amount is Rs4500</p>
-              <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => setIsModalOpen(true)}>
-                Book Now
-              </button>
+              {dateStr < format(new Date(), 'yyyy-MM-dd') ? (
+                <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  <p>This date is in the past.</p>
+                </div>
+              ) : (
+                <>
+                  <div style={{
+                    padding: '0.5rem',
+                    borderRadius: '4px',
+                    backgroundColor: '#e2e8f0',
+                    color: '#1e293b',
+                    fontWeight: 'bold',
+                    marginBottom: '1rem',
+                    textAlign: 'center'
+                  }}>
+                    Available
+                  </div>
+                  <p style={{ marginBottom: '0.5rem' }}>This date is available for booking.</p>
+                  <p style={{ marginBottom: '1rem', fontWeight: '500' }}>Booking amount is Rs4500</p>
+                  <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => setIsModalOpen(true)}>
+                    Book Now
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
