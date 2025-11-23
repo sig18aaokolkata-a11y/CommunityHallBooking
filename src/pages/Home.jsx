@@ -1,31 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
-import { format } from 'date-fns';
-import { getBooking, createBooking } from '../services/bookingService';
+import { format, startOfMonth, endOfMonth, parseISO } from 'date-fns';
+import { getBookingsByDateRange, createBooking } from '../services/bookingService';
 import BookingModal from '../components/BookingModal';
 import 'react-calendar/dist/Calendar.css';
 import './Home.css';
 
 const Home = () => {
     const [date, setDate] = useState(new Date());
-    const [booking, setBooking] = useState(null);
+    const [bookingsMap, setBookingsMap] = useState({});
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [activeStartDate, setActiveStartDate] = useState(new Date());
 
     const dateStr = format(date, 'yyyy-MM-dd');
+    const selectedBooking = bookingsMap[dateStr];
 
     useEffect(() => {
-        fetchBooking();
-    }, [dateStr]);
+        fetchBookingsForMonth(activeStartDate);
+    }, [activeStartDate]);
 
-    const fetchBooking = async () => {
+    const fetchBookingsForMonth = async (currentDate) => {
         setLoading(true);
         try {
-            const data = await getBooking(dateStr);
-            setBooking(data);
+            const start = format(startOfMonth(currentDate), 'yyyy-MM-dd');
+            const end = format(endOfMonth(currentDate), 'yyyy-MM-dd');
+            const data = await getBookingsByDateRange(start, end);
+
+            const newMap = {};
+            data.forEach(b => {
+                newMap[b.date] = b;
+            });
+            setBookingsMap(prev => ({ ...prev, ...newMap }));
         } catch (error) {
-            console.error("Error fetching booking:", error);
+            console.error("Error fetching bookings:", error);
         } finally {
             setLoading(false);
         }
@@ -35,7 +44,8 @@ const Home = () => {
         setIsSubmitting(true);
         try {
             await createBooking(dateStr, bookingData);
-            await fetchBooking();
+            // Refresh current month data
+            await fetchBookingsForMonth(activeStartDate);
             setIsModalOpen(false);
             alert('Booking successful!');
         } catch (error) {
@@ -43,6 +53,17 @@ const Home = () => {
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const tileClassName = ({ date, view }) => {
+        if (view === 'month') {
+            const dStr = format(date, 'yyyy-MM-dd');
+            const booking = bookingsMap[dStr];
+            if (booking) {
+                return booking.isPaid ? 'calendar-tile-paid' : 'calendar-tile-booked';
+            }
+        }
+        return null;
     };
 
     return (
@@ -54,29 +75,38 @@ const Home = () => {
                     value={date}
                     minDate={new Date()}
                     className="custom-calendar"
+                    onActiveStartDateChange={({ activeStartDate }) => setActiveStartDate(activeStartDate)}
+                    tileClassName={tileClassName}
                 />
+                <div className="legend">
+                    <div className="legend-item"><span className="dot available"></span> Available</div>
+                    <div className="legend-item"><span className="dot booked"></span> Booked (Unpaid)</div>
+                    <div className="legend-item"><span className="dot paid"></span> Booked (Paid)</div>
+                </div>
             </div>
 
             <div className="details-section card">
                 <h2>Details for {format(date, 'MMMM d, yyyy')}</h2>
 
-                {loading ? (
+                {loading && Object.keys(bookingsMap).length === 0 ? (
                     <p>Loading...</p>
-                ) : booking ? (
+                ) : selectedBooking ? (
                     <div className="booking-info">
-                        <div className="status-badge booked">Booked</div>
+                        <div className={`status-badge ${selectedBooking.isPaid ? 'paid-badge' : 'booked'}`}>
+                            {selectedBooking.isPaid ? 'Booked (Paid)' : 'Booked (Pending)'}
+                        </div>
                         <div className="info-row">
                             <span className="label">Booked By:</span>
-                            <span className="value">{booking.bookedBy}</span>
+                            <span className="value">{selectedBooking.bookedBy}</span>
                         </div>
                         <div className="info-row">
                             <span className="label">Flat Number:</span>
-                            <span className="value">{booking.flatNumber}</span>
+                            <span className="value">{selectedBooking.flatNumber}</span>
                         </div>
                         <div className="info-row">
                             <span className="label">Payment Status:</span>
-                            <span className={`value status-${booking.isPaid ? 'paid' : 'pending'}`}>
-                                {booking.isPaid ? 'Paid' : 'Pending'}
+                            <span className={`value status-${selectedBooking.isPaid ? 'paid' : 'pending'}`}>
+                                {selectedBooking.isPaid ? 'Paid' : 'Pending'}
                             </span>
                         </div>
                     </div>

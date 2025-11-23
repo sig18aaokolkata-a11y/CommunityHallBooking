@@ -6,7 +6,7 @@ import Admin from './pages/Admin';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/CommunityHallBooking">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

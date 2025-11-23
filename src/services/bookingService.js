@@ -8,6 +8,7 @@ import {
     query,
     where,
     getDocs,
+    deleteDoc,
     Timestamp
 } from "firebase/firestore";
 
@@ -57,6 +58,16 @@ export const updatePaymentStatus = async (dateStr, isPaid) => {
         });
     } catch (error) {
         console.error("Error updating payment status:", error);
+        throw error;
+    }
+};
+
+export const deleteBooking = async (dateStr) => {
+    try {
+        const docRef = doc(db, COLLECTION_NAME, dateStr);
+        await deleteDoc(docRef);
+    } catch (error) {
+        console.error("Error deleting booking:", error);
         throw error;
     }
 };

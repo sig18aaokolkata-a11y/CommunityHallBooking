@@ -25,6 +25,53 @@
     font-family: inherit !important;
 }
 
+/* Calendar Indicators */
+.calendar-tile-booked {
+    background-color: #fee2e2 !important;
+    color: #991b1b !important;
+    border-radius: 0.25rem;
+}
+
+.calendar-tile-paid {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+    border-radius: 0.25rem;
+}
+
+.legend {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot.available {
+    background-color: white;
+    border: 1px solid var(--border-color);
+}
+
+.dot.booked {
+    background-color: #fee2e2;
+}
+
+.dot.paid {
+    background-color: #d1fae5;
+}
+
 .booking-info {
     display: flex;
     flex-direction: column;
@@ -45,9 +92,14 @@
     color: #991b1b;
 }
 
-.status-badge.available {
+.status-badge.paid-badge {
     background-color: #d1fae5;
     color: #065f46;
+}
+
+.status-badge.available {
+    background-color: #f3f4f6;
+    color: #374151;
 }
 
 .info-row {
