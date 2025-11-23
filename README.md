@@ -7,7 +7,6 @@ A responsive web application for booking a community hall, built with **Next.js*
 - **Public Calendar**: View availability of the community hall.
 - **Booking System**: Users can book available dates by providing their name and flat number.
 - **Admin Dashboard**: 
-  - Login (Password: `admin123`)
   - View all bookings.
   - Mark bookings as Paid/Unpaid.
   - Delete bookings.
