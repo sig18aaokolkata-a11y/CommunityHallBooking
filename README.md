@@ -1,16 +1,56 @@
-# React + Vite
+# Community Hall Booking App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive web application for booking a community hall, built with **Next.js** and **MongoDB**.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Public Calendar**: View availability of the community hall.
+- **Booking System**: Users can book available dates by providing their name and flat number.
+- **Admin Dashboard**: 
+  - Login (Password: `admin123`)
+  - View all bookings.
+  - Mark bookings as Paid/Unpaid.
+  - Delete bookings.
+  - Download booking reports as Excel.
+- **Responsive Design**: Works on Desktop, Tablet, and Mobile.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Database**: [MongoDB Atlas](https://www.mongodb.com/atlas/database)
+- **Styling**: CSS Modules / Global CSS (Minimalist)
+- **Libraries**: `react-calendar`, `date-fns`, `xlsx`, `mongoose`
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/sig18aaokolkata-a11y/CommunityHallBooking.git
+    cd CommunityHallBooking
+    ```
+
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**:
+    Create a `.env.local` file in the root directory and add your MongoDB URI:
+    ```env
+    MONGODB_URI=your_mongodb_connection_string
+    ```
+
+4.  **Run Locally**:
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Deployment
+
+This application is optimized for deployment on **Vercel**.
+
+1.  Push your code to GitHub.
+2.  Import the project into Vercel.
+3.  Add the `MONGODB_URI` environment variable in the Vercel project settings.
+4.  Deploy.

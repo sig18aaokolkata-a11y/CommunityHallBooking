@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 
-const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => {
+const AdminBookingModal = ({ isOpen, onClose, onConfirm, isSubmitting }) => {
+    const [date, setDate] = useState('');
     const [name, setName] = useState('');
     const [flatNumber, setFlatNumber] = useState('');
     const [error, setError] = useState('');
@@ -11,18 +12,34 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!name.trim() || !flatNumber.trim()) {
+        if (!date || !name.trim() || !flatNumber.trim()) {
             setError('Please fill in all fields');
             return;
         }
-        onConfirm({ bookedBy: name, flatNumber });
+        onConfirm({ date, bookedBy: name, flatNumber });
+        // Reset form after submit (optional, depending on behavior)
+        if (!isSubmitting) {
+            // We'll let the parent handle closing, but we can clear error
+            setError('');
+        }
     };
 
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h2>Book Hall for {dateStr}</h2>
+                <h2>Add New Booking</h2>
                 <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="date">Date</label>
+                        <input
+                            type="date"
+                            id="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            disabled={isSubmitting}
+                            min={new Date().toISOString().split('T')[0]} // Optional: prevent past dates? Admin might need to record past bookings though. Let's remove min for admin flexibility or keep it if strict. User didn't specify. I'll keep it open.
+                        />
+                    </div>
                     <div className="form-group">
                         <label htmlFor="name">Full Name</label>
                         <input
@@ -30,7 +47,7 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter your full name"
+                            placeholder="Enter full name"
                             disabled={isSubmitting}
                         />
                     </div>
@@ -41,7 +58,7 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
                             id="flat"
                             value={flatNumber}
                             onChange={(e) => setFlatNumber(e.target.value)}
-                            placeholder="Enter your flat number"
+                            placeholder="Enter flat number"
                             disabled={isSubmitting}
                         />
                     </div>
@@ -51,7 +68,7 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
                             Cancel
                         </button>
                         <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                            {isSubmitting ? 'Booking...' : 'Confirm Booking'}
+                            {isSubmitting ? 'Adding...' : 'Add Booking'}
                         </button>
                     </div>
                 </form>
@@ -60,4 +77,4 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
     );
 };
 
-export default BookingModal;
+export default AdminBookingModal;

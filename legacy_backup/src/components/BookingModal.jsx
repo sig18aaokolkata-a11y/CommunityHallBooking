@@ -1,6 +1,5 @@
-'use client';
-
 import React, { useState } from 'react';
+import './BookingModal.css';
 
 const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => {
     const [name, setName] = useState('');
@@ -45,7 +44,7 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
                             disabled={isSubmitting}
                         />
                     </div>
-                    {error && <p style={{ color: 'var(--danger)', marginBottom: '1rem' }}>{error}</p>}
+                    {error && <p className="error-message">{error}</p>}
                     <div className="modal-actions">
                         <button type="button" className="btn btn-secondary" onClick={onClose} disabled={isSubmitting}>
                             Cancel
