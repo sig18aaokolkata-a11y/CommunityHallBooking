@@ -124,6 +124,7 @@ export default function Admin() {
 
         const ws = XLSX.utils.json_to_sheet(filteredBookings.map(b => ({
             Date: b.date,
+            'Time Slot': `${b.startTime} - ${b.endTime}`,
             'Booked By': b.bookedBy,
             'Flat Number': b.flatNumber,
             'Payment Status': b.isPaid ? 'Paid' : 'Pending',
@@ -207,6 +208,7 @@ export default function Admin() {
                             <thead>
                                 <tr style={{ borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
                                     <th style={{ padding: '1rem' }}>Date</th>
+                                    <th style={{ padding: '1rem' }}>Time Slot</th>
                                     <th style={{ padding: '1rem' }}>Booked By</th>
                                     <th style={{ padding: '1rem' }}>Flat No</th>
                                     <th style={{ padding: '1rem' }}>Status</th>
@@ -216,12 +218,13 @@ export default function Admin() {
                             <tbody>
                                 {filteredBookings.length === 0 ? (
                                     <tr>
-                                        <td colSpan="5" style={{ padding: '1rem', textAlign: 'center' }}>No bookings found</td>
+                                        <td colSpan="6" style={{ padding: '1rem', textAlign: 'center' }}>No bookings found</td>
                                     </tr>
                                 ) : (
                                     filteredBookings.map((booking) => (
                                         <tr key={booking._id} style={{ borderBottom: '1px solid #e2e8f0' }}>
                                             <td style={{ padding: '1rem' }}>{booking.date}</td>
+                                            <td style={{ padding: '1rem' }}>{booking.startTime} - {booking.endTime}</td>
                                             <td style={{ padding: '1rem' }}>{booking.bookedBy}</td>
                                             <td style={{ padding: '1rem' }}>{booking.flatNumber}</td>
                                             <td style={{ padding: '1rem' }}>

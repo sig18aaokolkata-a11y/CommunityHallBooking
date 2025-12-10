@@ -17,6 +17,14 @@ const BookingSchema = new mongoose.Schema({
         required: [true, 'Please provide the flat number.'],
         maxlength: [20, 'Flat number cannot be more than 20 characters'],
     },
+    startTime: {
+        type: String,
+        required: [true, 'Please provide a start time.'],
+    },
+    endTime: {
+        type: String,
+        required: [true, 'Please provide an end time.'],
+    },
     isPaid: {
         type: Boolean,
         default: false,

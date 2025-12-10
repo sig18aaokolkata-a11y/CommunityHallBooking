@@ -6,17 +6,19 @@ const AdminBookingModal = ({ isOpen, onClose, onConfirm, isSubmitting }) => {
     const [date, setDate] = useState('');
     const [name, setName] = useState('');
     const [flatNumber, setFlatNumber] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
     const [error, setError] = useState('');
 
     if (!isOpen) return null;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!date || !name.trim() || !flatNumber.trim()) {
+        if (!date || !name.trim() || !flatNumber.trim() || !startTime || !endTime) {
             setError('Please fill in all fields');
             return;
         }
-        onConfirm({ date, bookedBy: name, flatNumber });
+        onConfirm({ date, bookedBy: name, flatNumber, startTime, endTime });
         // Reset form after submit (optional, depending on behavior)
         if (!isSubmitting) {
             // We'll let the parent handle closing, but we can clear error
@@ -59,6 +61,26 @@ const AdminBookingModal = ({ isOpen, onClose, onConfirm, isSubmitting }) => {
                             value={flatNumber}
                             onChange={(e) => setFlatNumber(e.target.value)}
                             placeholder="Enter flat number"
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="startTime">Start Time</label>
+                        <input
+                            type="time"
+                            id="startTime"
+                            value={startTime}
+                            onChange={(e) => setStartTime(e.target.value)}
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="endTime">End Time</label>
+                        <input
+                            type="time"
+                            id="endTime"
+                            value={endTime}
+                            onChange={(e) => setEndTime(e.target.value)}
                             disabled={isSubmitting}
                         />
                     </div>

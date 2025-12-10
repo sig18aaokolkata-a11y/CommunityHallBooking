@@ -128,6 +128,9 @@ export default function Home() {
                 {selectedBooking.isPaid ? 'Booked (Paid)' : 'Booked (Pending)'}
               </div>
               <div style={{ marginBottom: '0.5rem' }}>
+                <span style={{ fontWeight: '600' }}>Time Slot:</span> {selectedBooking.startTime} - {selectedBooking.endTime}
+              </div>
+              <div style={{ marginBottom: '0.5rem' }}>
                 <span style={{ fontWeight: '600' }}>Booked By:</span> {selectedBooking.bookedBy}
               </div>
               <div style={{ marginBottom: '0.5rem' }}>

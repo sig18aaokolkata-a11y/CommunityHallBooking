@@ -5,17 +5,19 @@ import React, { useState } from 'react';
 const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => {
     const [name, setName] = useState('');
     const [flatNumber, setFlatNumber] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
     const [error, setError] = useState('');
 
     if (!isOpen) return null;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!name.trim() || !flatNumber.trim()) {
+        if (!name.trim() || !flatNumber.trim() || !startTime || !endTime) {
             setError('Please fill in all fields');
             return;
         }
-        onConfirm({ bookedBy: name, flatNumber });
+        onConfirm({ bookedBy: name, flatNumber, startTime, endTime });
     };
 
     return (
@@ -42,6 +44,26 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
                             value={flatNumber}
                             onChange={(e) => setFlatNumber(e.target.value)}
                             placeholder="Enter your flat number"
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="startTime">Start Time</label>
+                        <input
+                            type="time"
+                            id="startTime"
+                            value={startTime}
+                            onChange={(e) => setStartTime(e.target.value)}
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="endTime">End Time</label>
+                        <input
+                            type="time"
+                            id="endTime"
+                            value={endTime}
+                            onChange={(e) => setEndTime(e.target.value)}
                             disabled={isSubmitting}
                         />
                     </div>
