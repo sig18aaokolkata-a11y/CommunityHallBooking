@@ -25,6 +25,22 @@ const BookingSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide an end time.'],
     },
+    eventType: {
+        type: String,
+        required: [true, 'Please provide the type of event.'],
+    },
+    guestCount: {
+        type: Number,
+        required: [true, 'Please provide the approximate number of guests.'],
+        min: [1, 'Guest count must be at least 1'],
+        max: [500, 'Guest count cannot exceed 500'],
+    },
+    parkingCount: {
+        type: Number,
+        required: [true, 'Please provide the approximate number of guest cars.'],
+        min: [1, 'Parking count must be at least 1'],
+        max: [20, 'Parking count cannot exceed 20'],
+    },
     isPaid: {
         type: Boolean,
         default: false,

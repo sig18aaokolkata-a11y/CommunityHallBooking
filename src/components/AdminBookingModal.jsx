@@ -8,17 +8,73 @@ const AdminBookingModal = ({ isOpen, onClose, onConfirm, isSubmitting }) => {
     const [flatNumber, setFlatNumber] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
+    const [eventType, setEventType] = useState('');
+    const [guestCount, setGuestCount] = useState('');
+    const [parkingCount, setParkingCount] = useState('');
     const [error, setError] = useState('');
 
     if (!isOpen) return null;
 
+    const handleGuestChange = (e) => {
+        const val = e.target.value;
+        if (val === '') {
+            setGuestCount('');
+            return;
+        }
+        const num = parseInt(val);
+        if (num > 500) {
+            setError('Guest count cannot exceed 500');
+        } else {
+            setError('');
+            setGuestCount(val);
+        }
+    };
+
+    const handleParkingChange = (e) => {
+        const val = e.target.value;
+        if (val === '') {
+            setParkingCount('');
+            return;
+        }
+        const num = parseInt(val);
+        if (num > 20) {
+            setError('Parking count cannot exceed 20');
+        } else {
+            setError('');
+            setParkingCount(val);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!date || !name.trim() || !flatNumber.trim() || !startTime || !endTime) {
+        if (!date || !name.trim() || !flatNumber.trim() || !startTime || !endTime || !eventType.trim() || !guestCount || !parkingCount) {
             setError('Please fill in all fields');
             return;
         }
-        onConfirm({ date, bookedBy: name, flatNumber, startTime, endTime });
+
+        const guests = parseInt(guestCount);
+        const parking = parseInt(parkingCount);
+
+        if (guests < 1) {
+            setError('Guest count must be at least 1');
+            return;
+        }
+
+        if (parking < 1) {
+            setError('Parking count must be at least 1');
+            return;
+        }
+
+        onConfirm({
+            date,
+            bookedBy: name,
+            flatNumber,
+            startTime,
+            endTime,
+            eventType,
+            guestCount: guests,
+            parkingCount: parking
+        });
         // Reset form after submit (optional, depending on behavior)
         if (!isSubmitting) {
             // We'll let the parent handle closing, but we can clear error
@@ -39,7 +95,7 @@ const AdminBookingModal = ({ isOpen, onClose, onConfirm, isSubmitting }) => {
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                             disabled={isSubmitting}
-                            min={new Date().toISOString().split('T')[0]} // Optional: prevent past dates? Admin might need to record past bookings though. Let's remove min for admin flexibility or keep it if strict. User didn't specify. I'll keep it open.
+                            min={new Date().toISOString().split('T')[0]}
                         />
                     </div>
                     <div className="form-group">
@@ -65,24 +121,65 @@ const AdminBookingModal = ({ isOpen, onClose, onConfirm, isSubmitting }) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="startTime">Start Time</label>
+                        <label htmlFor="eventType">Event Type</label>
                         <input
-                            type="time"
-                            id="startTime"
-                            value={startTime}
-                            onChange={(e) => setStartTime(e.target.value)}
+                            type="text"
+                            id="eventType"
+                            value={eventType}
+                            onChange={(e) => setEventType(e.target.value)}
+                            placeholder="e.g., Birthday, Marriage"
                             disabled={isSubmitting}
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="endTime">End Time</label>
-                        <input
-                            type="time"
-                            id="endTime"
-                            value={endTime}
-                            onChange={(e) => setEndTime(e.target.value)}
-                            disabled={isSubmitting}
-                        />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="form-group">
+                            <label htmlFor="guestCount">Approx. Number of Guests</label>
+                            <input
+                                type="number"
+                                id="guestCount"
+                                value={guestCount}
+                                onChange={handleGuestChange}
+                                min="1"
+                                max="500"
+                                placeholder="Enter guests count"
+                                disabled={isSubmitting}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="parkingCount">Approx. Guest Car Parking</label>
+                            <input
+                                type="number"
+                                id="parkingCount"
+                                value={parkingCount}
+                                onChange={handleParkingChange}
+                                min="1"
+                                max="20"
+                                placeholder="Enter parking count"
+                                disabled={isSubmitting}
+                            />
+                        </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="form-group">
+                            <label htmlFor="startTime">Start Time</label>
+                            <input
+                                type="time"
+                                id="startTime"
+                                value={startTime}
+                                onChange={(e) => setStartTime(e.target.value)}
+                                disabled={isSubmitting}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="endTime">End Time</label>
+                            <input
+                                type="time"
+                                id="endTime"
+                                value={endTime}
+                                onChange={(e) => setEndTime(e.target.value)}
+                                disabled={isSubmitting}
+                            />
+                        </div>
                     </div>
                     {error && <p style={{ color: 'var(--danger)', marginBottom: '1rem' }}>{error}</p>}
                     <div className="modal-actions">

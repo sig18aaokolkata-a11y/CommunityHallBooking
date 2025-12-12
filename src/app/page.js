@@ -5,6 +5,7 @@ import Calendar from 'react-calendar';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import 'react-calendar/dist/Calendar.css';
 import BookingModal from '@/components/BookingModal';
+import TermsAndConditions from '@/components/TermsAndConditions';
 
 export default function Home() {
   const [date, setDate] = useState(new Date());
@@ -136,9 +137,23 @@ export default function Home() {
               <div style={{ marginBottom: '0.5rem' }}>
                 <span style={{ fontWeight: '600' }}>Flat Number:</span> {selectedBooking.flatNumber}
               </div>
-              <div>
+              <div style={{ marginBottom: '0.5rem' }}>
                 <span style={{ fontWeight: '600' }}>Payment Status:</span> {selectedBooking.isPaid ? 'Paid' : 'Pending'}
               </div>
+
+              {selectedBooking.isPaid && (
+                <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                  <a
+                    href={`/print/${selectedBooking._id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                    style={{ textDecoration: 'none', display: 'inline-block', width: '100%' }}
+                  >
+                    Print Booking Form
+                  </a>
+                </div>
+              )}
               {!selectedBooking.isPaid && (
                 <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                   <p style={{ marginBottom: '0.5rem', fontWeight: '500' }}>Scan to Pay</p>
@@ -181,6 +196,10 @@ export default function Home() {
         </div>
       </div>
 
+      <div className="card" style={{ marginTop: '2rem' }}>
+        <TermsAndConditions />
+      </div>
+
       <BookingModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -188,6 +207,6 @@ export default function Home() {
         dateStr={dateStr}
         isSubmitting={isSubmitting}
       />
-    </div>
+    </div >
   );
 }
