@@ -89,7 +89,10 @@ export default function Home() {
   return (
     <div className="container">
       <header className="header-responsive">
-        <h1>Signature18 Community Hall Booking</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <img src="/logo.jpg" alt="Signature 18" style={{ height: '60px', width: 'auto' }} />
+          <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Signature18 Community Hall Booking</h1>
+        </div>
         <a href="/admin" className="btn btn-secondary">Admin Login</a>
       </header>
 

@@ -17,6 +17,13 @@ export default function Admin() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
+        const auth = localStorage.getItem('adminAuth');
+        if (auth === 'true') {
+            setIsAuthenticated(true);
+        }
+    }, []);
+
+    useEffect(() => {
         if (isAuthenticated) {
             fetchBookings();
         }
@@ -24,8 +31,9 @@ export default function Admin() {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        if (password === 'BosePukur@Kolkata42') { // Simple hardcoded password
+        if (password === 'BosePukur@Kolkata42') {
             setIsAuthenticated(true);
+            localStorage.setItem('adminAuth', 'true');
         } else {
             alert('Invalid password');
         }
@@ -171,8 +179,12 @@ export default function Admin() {
             <header className="header-responsive">
                 <h1>Admin Dashboard</h1>
                 <div>
+                    <a href="/admin/owners" className="btn btn-secondary" style={{ marginRight: '1rem' }}>Manage Owners</a>
                     <a href="/" className="btn btn-secondary" style={{ marginRight: '1rem' }}>Back to Home</a>
-                    <button onClick={() => setIsAuthenticated(false)} className="btn btn-danger">Logout</button>
+                    <button onClick={() => {
+                        setIsAuthenticated(false);
+                        localStorage.removeItem('adminAuth');
+                    }} className="btn btn-danger">Logout</button>
                 </div>
             </header>
 
@@ -253,7 +265,7 @@ export default function Admin() {
                                                     className="btn btn-secondary"
                                                     style={{ marginRight: '0.5rem', fontSize: '0.8rem' }}
                                                 >
-                                                    Toggle Pay
+                                                    {booking.isPaid ? 'Unconfirm Pay' : 'Confirm Pay'}
                                                 </button>
                                                 <button
                                                     onClick={() => deleteBooking(booking._id)}
