@@ -119,6 +119,40 @@ export default function Admin() {
         }
     };
 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [deletePassword, setDeletePassword] = useState('');
+
+    const initiateDeleteAll = () => {
+        if (confirm('WARNING: Are you sure you want to DELETE ALL bookings? This will wipe the entire calendar and CANNOT be undone.')) {
+            setDeletePassword('');
+            setIsDeleteModalOpen(true);
+        }
+    };
+
+    const confirmDeleteAll = async (e) => {
+        e.preventDefault();
+        if (deletePassword !== 'BosePukur@Kolkata42') {
+            alert('Incorrect password.');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/bookings?action=deleteAll', {
+                method: 'DELETE',
+            });
+            const data = await res.json();
+            if (data.success) {
+                fetchBookings();
+                setIsDeleteModalOpen(false);
+                alert('All bookings have been deleted.');
+            } else {
+                alert('Failed to delete all: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    };
+
     const getFilteredBookings = () => {
         return bookings.filter(b => {
             if (startDate && b.date < startDate) return false;
@@ -211,7 +245,8 @@ export default function Admin() {
                                 style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                             />
                         </div>
-                        <button onClick={downloadReport} className="btn btn-success">Download Report</button>
+                        <button onClick={downloadReport} className="btn btn-success" style={{ marginRight: '1rem' }}>Download Report</button>
+                        <button onClick={initiateDeleteAll} className="btn btn-danger">Delete All Bookings</button>
                     </div>
                 </div>
 
@@ -290,6 +325,41 @@ export default function Admin() {
                 onConfirm={handleAddBooking}
                 isSubmitting={isSubmitting}
             />
+
+            {isDeleteModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content" style={{ maxWidth: '400px' }}>
+                        <h2>Confirm Deletion</h2>
+                        <p style={{ marginBottom: '1rem', color: 'var(--danger)' }}>
+                            This will delete ALL bookings permanently.
+                        </p>
+                        <form onSubmit={confirmDeleteAll}>
+                            <div className="form-group">
+                                <label>Enter Admin Password</label>
+                                <input
+                                    type="password"
+                                    value={deletePassword}
+                                    onChange={(e) => setDeletePassword(e.target.value)}
+                                    placeholder="Password"
+                                    autoFocus
+                                />
+                            </div>
+                            <div className="modal-actions">
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={() => setIsDeleteModalOpen(false)}
+                                >
+                                    Cancel
+                                </button>
+                                <button type="submit" className="btn btn-danger">
+                                    Confirm Delete
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

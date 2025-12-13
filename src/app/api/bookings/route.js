@@ -35,3 +35,20 @@ export async function POST(request) {
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
 }
+
+export async function DELETE(request) {
+    await dbConnect();
+    const { searchParams } = new URL(request.url);
+    const action = searchParams.get('action');
+
+    if (action !== 'deleteAll') {
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 });
+    }
+
+    try {
+        await Booking.deleteMany({});
+        return NextResponse.json({ success: true, message: 'All bookings deleted' });
+    } catch (error) {
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    }
+}

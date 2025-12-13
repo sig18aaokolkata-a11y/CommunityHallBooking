@@ -12,8 +12,54 @@ const AdminBookingModal = ({ isOpen, onClose, onConfirm, isSubmitting }) => {
     const [guestCount, setGuestCount] = useState('');
     const [parkingCount, setParkingCount] = useState('');
     const [error, setError] = useState('');
+    const [owners, setOwners] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
+    React.useEffect(() => {
+        if (isOpen) {
+            fetch('/api/owners')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        setOwners(data.data);
+                    }
+                })
+                .catch(err => console.error('Error fetching owners:', err));
+        }
+    }, [isOpen]);
 
     if (!isOpen) return null;
+
+    const handleNameChange = (e) => {
+        const val = e.target.value;
+        setName(val);
+
+        if (val.length > 0) {
+            const matches = owners.filter(o => o.name.toLowerCase().includes(val.toLowerCase()));
+            setSuggestions(matches);
+            setShowSuggestions(true);
+        } else {
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleSuggestionClick = (owner) => {
+        setName(owner.name);
+        setFlatNumber(owner.flatNumber);
+        setShowSuggestions(false);
+    };
+
+    const handleFlatChange = (e) => {
+        const val = e.target.value.toUpperCase();
+        setFlatNumber(val);
+
+        // Auto-populate name if flat matches exactly
+        const owner = owners.find(o => o.flatNumber === val);
+        if (owner) {
+            setName(owner.name);
+        }
+    };
 
     const handleGuestChange = (e) => {
         const val = e.target.value;
@@ -99,26 +145,62 @@ const AdminBookingModal = ({ isOpen, onClose, onConfirm, isSubmitting }) => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="name">Full Name</label>
-                        <input
-                            type="text"
-                            id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter full name"
-                            disabled={isSubmitting}
-                        />
-                    </div>
-                    <div className="form-group">
                         <label htmlFor="flat">Flat Number</label>
                         <input
                             type="text"
                             id="flat"
                             value={flatNumber}
-                            onChange={(e) => setFlatNumber(e.target.value)}
+                            onChange={handleFlatChange}
                             placeholder="Enter flat number"
                             disabled={isSubmitting}
                         />
+                    </div>
+                    <div className="form-group" style={{ position: 'relative' }}>
+                        <label htmlFor="name">Full Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            value={name}
+                            onChange={handleNameChange}
+                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                            placeholder="Enter full name"
+                            disabled={isSubmitting}
+                            autoComplete="off"
+                        />
+                        {showSuggestions && suggestions.length > 0 && (
+                            <ul style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                right: 0,
+                                backgroundColor: 'white',
+                                border: '1px solid #ccc',
+                                borderRadius: '4px',
+                                listStyle: 'none',
+                                padding: 0,
+                                margin: 0,
+                                maxHeight: '150px',
+                                overflowY: 'auto',
+                                zIndex: 10,
+                                boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                            }}>
+                                {suggestions.map(owner => (
+                                    <li
+                                        key={owner._id}
+                                        onMouseDown={() => handleSuggestionClick(owner)}
+                                        style={{
+                                            padding: '0.5rem',
+                                            cursor: 'pointer',
+                                            borderBottom: '1px solid #eee'
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f9ff'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                                    >
+                                        {owner.name} ({owner.flatNumber})
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                     <div className="form-group">
                         <label htmlFor="eventType">Event Type</label>

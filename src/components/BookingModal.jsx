@@ -145,6 +145,17 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
             <div className="modal-content">
                 <h2>Book Hall for {formattedDate}</h2>
                 <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="flat">Flat Number</label>
+                        <input
+                            type="text"
+                            id="flat"
+                            value={flatNumber}
+                            onChange={handleFlatChange}
+                            placeholder="Enter your flat number"
+                            disabled={isSubmitting}
+                        />
+                    </div>
                     <div className="form-group" style={{ position: 'relative' }}>
                         <label htmlFor="name">Full Name</label>
                         <input
@@ -191,17 +202,6 @@ const BookingModal = ({ isOpen, onClose, onConfirm, dateStr, isSubmitting }) => 
                                 ))}
                             </ul>
                         )}
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="flat">Flat Number</label>
-                        <input
-                            type="text"
-                            id="flat"
-                            value={flatNumber}
-                            onChange={handleFlatChange}
-                            placeholder="Enter your flat number"
-                            disabled={isSubmitting}
-                        />
                     </div>
                     <div className="form-group">
                         <label htmlFor="eventType">Event Type</label>
